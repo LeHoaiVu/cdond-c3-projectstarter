@@ -76,9 +76,9 @@ jobs:
           name: Analyze Phase Frontend
           command: |
             cd frontend
-            # npm install
-            # npm install oauth-sign@^0.9.0
-            # npm audit --audit-level=critical
+            npm install
+            ## npm install oauth-sign@^0.9.0
+            npm audit --audit-level=critical
       - slack/notify:
           event: fail
           template: basic_fail_1
@@ -93,9 +93,10 @@ jobs:
       - run:
           name: Analyze Phase Backend
           command: |
-            cd backend
-            # npm install
-            # npm install oauth-sign@^0.9.0
+            cd frontend
+            npm install
+            ## npm install oauth-sign@^0.9.0
+            npm audit --audit-level=critical
 
 workflows:
   default:
