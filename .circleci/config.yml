@@ -2,6 +2,48 @@ version: 2.1
 
 orbs:
   slack: circleci/slack@4.1
+
+commands:
+  slack-notification:
+    parameters:
+      job-name:
+        default: "Job Name"
+        type: string
+    steps:
+      - slack/notify:
+          custom: |
+            {
+              "blocks": [
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "plain_text",
+                      "text": "The <<parameters.job-name>> jobs has been success in deploy id ${CIRCLE_WORKFLOW_ID:0:7}",
+                      "emoji": true
+                    }
+                  ]
+                }
+              ]
+            }
+          event: pass
+      - slack/notify:
+          custom: |
+            {
+              "blocks": [
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "plain_text",
+                      "text": "The <<parameters.job-name>> has been failed",
+                      "emoji": true
+                    }
+                  ]
+                }
+              ]
+            }
+          event: fail
             
 jobs:
   build-frontend:
@@ -79,6 +121,8 @@ jobs:
             # npm install
             # npm install oauth-sign@^0.9.0
             # npm audit --audit-level=critical 
+      - slack-notification:
+          job-name: "scan-frontend"
 
   scan-backend:
     docker:
@@ -94,6 +138,14 @@ jobs:
             # npm install
             # npm install oauth-sign@^0.9.0
             # npm audit --audit-level=critical
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
+      - slack/notify:
+          event: pass
+          template: success_tagged_deploy_1
+      - slack-notification:
+          job-name: "scan-frontend"
 
 workflows:
   default:
@@ -105,6 +157,7 @@ workflows:
       - test-backend:
           requires: [build-backend]
       - scan-backend:
+
           requires: [build-backend]
       - scan-frontend:
           requires: [build-frontend]
