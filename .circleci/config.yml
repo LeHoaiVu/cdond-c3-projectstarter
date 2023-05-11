@@ -121,8 +121,9 @@ jobs:
             # npm install
             # npm install oauth-sign@^0.9.0
             # npm audit --audit-level=critical 
-      - slack-notification:
-          job-name: "scan-frontend"
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
 
   scan-backend:
     docker:
@@ -144,8 +145,6 @@ jobs:
       - slack/notify:
           event: pass
           template: success_tagged_deploy_1
-      - slack-notification:
-          job-name: "scan-frontend"
 
 workflows:
   default:
