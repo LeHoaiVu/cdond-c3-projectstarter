@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  slack: circleci/slack@v4.12.5
+  slack: circleci/slack@v4.1
 commands:
   slack-notification-for-jobs:
     parameters:
