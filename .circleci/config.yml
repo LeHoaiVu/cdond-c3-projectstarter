@@ -1,187 +1,14 @@
-# version: 2.1
+version: 2.1
 
-# orbs:
-#   slack: circleci/slack@4.1
-
-# commands:
-#   slack-notification-for-jobs:
-#     parameters:
-#       job-name:
-#         default: "Job Name"
-#         type: string
-#     steps:
-#       - slack/notify:
-#           custom: |
-#             {
-#               "blocks": [
-#                 {
-#                   "type": "section",
-#                   "fields": [
-#                     {
-#                       "type": "plain_text",
-#                       "text": "The <<parameters.job-name>> jobs has been success in deploy id ${CIRCLE_WORKFLOW_ID:0:7}",
-#                       "emoji": true
-#                     }
-#                   ]
-#                 }
-#               ]
-#             }
-#           event: pass
-#       - slack/notify:
-#           custom: |
-#             {
-#               "blocks": [
-#                 {
-#                   "type": "section",
-#                   "fields": [
-#                     {
-#                       "type": "plain_text",
-#                       "text": "The <<parameters.job-name>> has been failed",
-#                       "emoji": true
-#                     }
-#                   ]
-#                 }
-#               ]
-#             }
-#           event: fail             
-            
-# jobs:
-#   build-frontend:
-#     docker:
-#       - image: circleci/node:13.8.0
-#     steps:
-#       - checkout
-#       - restore_cache:
-#           keys: [frontend-build]
-#       - run:
-#           name: Build Phase Frontend
-#           command: |
-#             cd frontend
-#             npm install
-#             npm run build
-#       - save_cache:
-#           paths: [frontend/node_modules]
-#           key: frontend-build
-
-#   build-backend:
-#     docker:
-#       - image: circleci/node:13.8.0
-#     steps:
-#       - checkout
-#       - restore_cache:
-#           keys: [backend-build]
-#       - run:
-#           name: Build Phase Backend
-#           command: |
-#             cd backend
-#             npm install
-#             npm run build
-#       - save_cache:
-#           paths: [backend/node_modules]
-#           key: backend-build
-#   test-frontend:
-#     docker:
-#       - image: circleci/node:13.8.0
-#     steps:
-#       - checkout
-#       - restore_cache:
-#           keys: [frontend-build]
-#       - run:
-#           name: Test Phase Frontend
-#           command: |
-#             cd frontend
-#             npm install
-#             npm run test
-
-#   test-backend:
-#     docker:
-#       - image: circleci/node:13.8.0
-#     steps:
-#       - checkout
-#       - restore_cache:
-#           keys: [backend-build]
-#       - run:
-#           name: Test Phase Backend
-#           command: |
-#             cd backend
-#             npm install
-#             npm run test
-
-#   scan-frontend:
-#     docker:
-#       - image: circleci/node:13.8.0
-#     steps:
-#       - checkout
-#       - restore_cache:
-#           keys: [frontend-build]
-#       - run:
-#           name: Analyze Phase Frontend
-#           command: |
-#             cd frontend
-#             # npm install
-#             # npm install oauth-sign@^0.9.0
-#             # npm audit --audit-level=critical 
-#       - slack-notification-for-jobs:
-#           job-name: "scan-frontend"
-
-#   scan-backend:
-#     docker:
-#       - image: circleci/node:13.8.0
-#     steps:
-#       - checkout
-#       - restore_cache:
-#           keys: [backend-build]
-#       - run:
-#           name: Analyze Phase Backend
-#           command: |
-#             cd backend
-#             # npm install
-#             # npm install oauth-sign@^0.9.0
-#             # npm audit --audit-level=critical
-#       - slack-notification-for-jobs:
-#           job-name: "scan-backend"
-
-# workflows:
-#   default:
-#     jobs:
-#       - build-frontend
-#       - build-backend
-#       - test-frontend:
-#           requires: [build-frontend]
-#       - test-backend:
-#           requires: [build-backend]
-#       - scan-backend:
-#           requires: [build-backend]
-#       - scan-frontend:
-#           requires: [build-frontend]
-#       # - deploy-infrastructure:
-#       #     requires: [test-frontend, test-backend, scan-frontend, scan-backend]
-#       #     filters:
-#       #       branches:
-#       #         only: [test-feature-branch]
-#       # - configure-infrastructure:
-#       #     requires: [deploy-infrastructure]
-#       # - run-migrations:
-#       #     requires: [configure-infrastructure]
-#       # - deploy-frontend:
-#       #     requires: [run-migrations]
-#       # - deploy-backend:
-#       #     requires: [run-migrations]
-#       # - smoke-test:
-#       #     requires: [deploy-backend, deploy-frontend]
-#       # - cloudfront-update:
-#       #     requires: [smoke-test]
-#       # - cleanup:
-#       #     requires: [cloudfront-update]
-
-
-version: '2.1'
 orbs:
   slack: circleci/slack@4.1
-jobs:
-  notify:
-    docker:
-      - image: cimg/base:stable
+
+commands:
+  slack-notification:
+    parameters:
+      job-name:
+        default: "Job Name"
+        type: string
     steps:
       - slack/notify:
           custom: |
@@ -192,16 +19,159 @@ jobs:
                   "fields": [
                     {
                       "type": "plain_text",
-                      "text": "*This is a text notification*",
+                      "text": "The <<parameters.job-name>> jobs has been success in deploy id ${CIRCLE_WORKFLOW_ID:0:7}",
                       "emoji": true
                     }
                   ]
                 }
               ]
             }
-          event: always
+          event: pass
+      - slack/notify:
+          custom: |
+            {
+              "blocks": [
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "plain_text",
+                      "text": "The <<parameters.job-name>> has been failed",
+                      "emoji": true
+                    }
+                  ]
+                }
+              ]
+            }
+          event: fail             
+            
+jobs:
+  build-frontend:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - restore_cache:
+          keys: [frontend-build]
+      - run:
+          name: Build Phase Frontend
+          command: |
+            cd frontend
+            npm install
+            npm run build
+      - save_cache:
+          paths: [frontend/node_modules]
+          key: frontend-build
+
+  build-backend:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - restore_cache:
+          keys: [backend-build]
+      - run:
+          name: Build Phase Backend
+          command: |
+            cd backend
+            npm install
+            npm run build
+      - save_cache:
+          paths: [backend/node_modules]
+          key: backend-build
+  test-frontend:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - restore_cache:
+          keys: [frontend-build]
+      - run:
+          name: Test Phase Frontend
+          command: |
+            cd frontend
+            npm install
+            npm run test
+
+  test-backend:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - restore_cache:
+          keys: [backend-build]
+      - run:
+          name: Test Phase Backend
+          command: |
+            cd backend
+            npm install
+            npm run test
+
+  scan-frontend:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - restore_cache:
+          keys: [frontend-build]
+      - run:
+          name: Analyze Phase Frontend
+          command: |
+            cd frontend
+            # npm install
+            # npm install oauth-sign@^0.9.0
+            # npm audit --audit-level=critical 
+      - slack-notification:
+          job-name: "scan-frontend"
+
+  scan-backend:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - restore_cache:
+          keys: [backend-build]
+      - run:
+          name: Analyze Phase Backend
+          command: |
+            cd backend
+            # npm install
+            # npm install oauth-sign@^0.9.0
+            # npm audit --audit-level=critical
+      - slack-notification:
+          job-name: "scan-backend"
+
 workflows:
-  send-notification:
+  default:
     jobs:
-      - notify:
+      - build-frontend
+      - build-backend
+      - test-frontend:
+          requires: [build-frontend]
+      - test-backend:
+          requires: [build-backend]
+      - scan-backend:
           context: vu-slack-secrets
+          requires: [build-backend]
+      - scan-frontend:
+          context: vu-slack-secrets
+          requires: [build-frontend]
+      # - deploy-infrastructure:
+      #     requires: [test-frontend, test-backend, scan-frontend, scan-backend]
+      #     filters:
+      #       branches:
+      #         only: [test-feature-branch]
+      # - configure-infrastructure:
+      #     requires: [deploy-infrastructure]
+      # - run-migrations:
+      #     requires: [configure-infrastructure]
+      # - deploy-frontend:
+      #     requires: [run-migrations]
+      # - deploy-backend:
+      #     requires: [run-migrations]
+      # - smoke-test:
+      #     requires: [deploy-backend, deploy-frontend]
+      # - cloudfront-update:
+      #     requires: [smoke-test]
+      # - cleanup:
+      #     requires: [cloudfront-update]
