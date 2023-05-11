@@ -153,9 +153,10 @@ workflows:
       - test-backend:
           requires: [build-backend]
       - scan-backend:
-          requires: [build-backend]
           context: vu-slack-secrets
+          requires: [build-backend]
       - scan-frontend:
+          context: vu-slack-secrets
           requires: [build-frontend]
       # - deploy-infrastructure:
       #     requires: [test-frontend, test-backend, scan-frontend, scan-backend]
