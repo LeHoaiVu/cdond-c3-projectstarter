@@ -96,6 +96,10 @@ jobs:
             # npm audit --audit-level=critical
 
 workflows:
+  send-notification:
+    jobs:
+      - notify:
+          context: vu-slack-secrets
   default:
     jobs:
       - build-frontend
