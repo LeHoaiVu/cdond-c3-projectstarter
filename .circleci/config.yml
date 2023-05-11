@@ -78,11 +78,7 @@ jobs:
             cd frontend
             # npm install
             # npm install oauth-sign@^0.9.0
-            # npm audit --audit-level=critical --force
-      - notify:
-          context: vu-slack-secrets
-          event: fail
-          template: basic_fail_1
+            # npm audit --audit-level=critical 
 
   scan-backend:
     docker:
