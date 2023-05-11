@@ -80,6 +80,7 @@ jobs:
             # npm install oauth-sign@^0.9.0
             # npm audit --audit-level=critical --force
       - slack/notify:
+          context: vu-slack-secrets
           event: fail
           template: basic_fail_1
 
