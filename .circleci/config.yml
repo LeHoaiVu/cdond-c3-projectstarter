@@ -124,6 +124,9 @@ jobs:
       - slack/notify:
           event: fail
           template: basic_fail_1
+      - slack/notify:
+          event: pass
+          template: success_tagged_deploy_1
 
   scan-backend:
     docker:
@@ -156,7 +159,6 @@ workflows:
       - test-backend:
           requires: [build-backend]
       - scan-backend:
-
           requires: [build-backend]
       - scan-frontend:
           requires: [build-frontend]
