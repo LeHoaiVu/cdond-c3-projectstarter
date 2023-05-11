@@ -1,7 +1,48 @@
 version: 2.1
 
 orbs:
-  slack: circleci/slack@4.1           
+  slack: circleci/slack@4.1
+commands:
+  slack-notification-for-jobs:
+    parameters:
+      job-name:
+        default: "Job Name"
+        type: string
+    steps:
+      - slack/notify:
+          custom: |
+            {
+              "blocks": [
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "plain_text",
+                      "text": "The <<parameters.job-name>> jobs has been success in deploy id ${CIRCLE_WORKFLOW_ID:0:7}",
+                      "emoji": true
+                    }
+                  ]
+                }
+              ]
+            }
+          event: pass
+      - slack/notify:
+          custom: |
+            {
+              "blocks": [
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "plain_text",
+                      "text": "The <<parameters.job-name>> has been failed",
+                      "emoji": true
+                    }
+                  ]
+                }
+              ]
+            }
+          event: fail      
             
 jobs:
   build-frontend:
@@ -79,6 +120,8 @@ jobs:
             # npm install
             # npm install oauth-sign@^0.9.0
             # npm audit --audit-level=critical 
+      - slack-notification-for-jobs:
+          job-name: "scan-frontend"
 
   scan-backend:
     docker:
@@ -97,6 +140,7 @@ jobs:
       - slack/notify:
           event: fail
           template: basic_fail_1
+    
 
 workflows:
   default:
