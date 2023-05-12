@@ -2,6 +2,7 @@ version: 2.1
 
 orbs:
   slack: circleci/slack@4.10.1
+
 commands:
   slack-notification-for-jobs:
     parameters:
@@ -120,6 +121,8 @@ jobs:
             # npm install
             # npm install oauth-sign@^0.9.0
             # npm audit --audit-level=critical 
+      - slack-notification-for-jobs:
+          job-name: "scan-frontend"
 
   scan-backend:
     docker:
@@ -135,9 +138,8 @@ jobs:
             # npm install
             # npm install oauth-sign@^0.9.0
             # npm audit --audit-level=critical
-      - slack/notify:
-          event: fail
-          template: basic_fail_1
+      - slack-notification-for-jobs:
+          job-name: "scan-backend"
 
     
 
