@@ -203,50 +203,50 @@ jobs:
           job-name: "deploy-infrastructure"
       # Here's where you will add some code to rollback on failure
       - destroy-environment
-  configure-infrastructure:
-    docker:
-      # Docker image here that supports Ansible
-      - image: python:3.7-alpine3.11
-    steps:
-      # Checkout code from git
-      - checkout
-      # Add ssh keys with fingerprint
-      - add_ssh_keys:
-          fingerprints: ["08:36:97:fc:fd:ab:96:cf:6c:fb:a1:e9:03:50:da:a1"]
-      # attach workspace
-      - attach_workspace:
-          at: ~/
-      - run:
-          name: Install dependencies
-          command: |
-            pip install awscli
-            apk add --update ansible
-            apk add --update tar
-            apk add --update gzip
-      - run:
-          name: Configure server
-          command: |
-            export ANSIBLE_HOST_KEY_CHECKING=False
-            echo ENVIROMENT=production > "backend/.env"
-            echo TYPEORM_CONNECTION=postgres >> "backend/.env"
-            echo TYPEORM_MIGRATIONS_DIR=./src/migrations >> "backend/.env"
-            echo TYPEORM_ENTITIES=./src/modules/domain/**/*.entity.ts >> "backend/.env"
-            echo TYPEORM_MIGRATIONS=./src/migrations/*.ts >> "backend/.env"
-            echo TYPEORM_HOST=${TYPEORM_HOST} >> backend/.env
-            echo TYPEORM_PORT=${TYPEORM_PORT} >> backend/.env
-            echo TYPEORM_USERNAME=${TYPEORM_USERNAME} >> backend/.env
-            echo TYPEORM_PASSWORD=${TYPEORM_PASSWORD} >> backend/.env
-            echo TYPEORM_DATABASE=${TYPEORM_DATABASE} >> backend/.env
-            cat backend/.env
-            cd .circleci/ansible
-            cat inventory.txt
-            ansible-playbook -i inventory.txt configure-server.yml
-      - persist_to_workspace:
-          root: ~/
-          paths:
-            - project/backend/.env
-      # Here's where you will add some code to rollback on failure
-      - destroy-environment
+  # configure-infrastructure:
+  #   docker:
+  #     # Docker image here that supports Ansible
+  #     - image: python:3.7-alpine3.11
+  #   steps:
+  #     # Checkout code from git
+  #     - checkout
+  #     # Add ssh keys with fingerprint
+  #     - add_ssh_keys:
+  #         fingerprints: ["08:36:97:fc:fd:ab:96:cf:6c:fb:a1:e9:03:50:da:a1"]
+  #     # attach workspace
+  #     - attach_workspace:
+  #         at: ~/
+  #     - run:
+  #         name: Install dependencies
+  #         command: |
+  #           pip install awscli
+  #           apk add --update ansible
+  #           apk add --update tar
+  #           apk add --update gzip
+  #     - run:
+  #         name: Configure server
+  #         command: |
+  #           export ANSIBLE_HOST_KEY_CHECKING=False
+  #           echo ENVIROMENT=production > "backend/.env"
+  #           echo TYPEORM_CONNECTION=postgres >> "backend/.env"
+  #           echo TYPEORM_MIGRATIONS_DIR=./src/migrations >> "backend/.env"
+  #           echo TYPEORM_ENTITIES=./src/modules/domain/**/*.entity.ts >> "backend/.env"
+  #           echo TYPEORM_MIGRATIONS=./src/migrations/*.ts >> "backend/.env"
+  #           echo TYPEORM_HOST=${TYPEORM_HOST} >> backend/.env
+  #           echo TYPEORM_PORT=${TYPEORM_PORT} >> backend/.env
+  #           echo TYPEORM_USERNAME=${TYPEORM_USERNAME} >> backend/.env
+  #           echo TYPEORM_PASSWORD=${TYPEORM_PASSWORD} >> backend/.env
+  #           echo TYPEORM_DATABASE=${TYPEORM_DATABASE} >> backend/.env
+  #           cat backend/.env
+  #           cd .circleci/ansible
+  #           cat inventory.txt
+  #           ansible-playbook -i inventory.txt configure-server.yml
+  #     - persist_to_workspace:
+  #         root: ~/
+  #         paths:
+  #           - project/backend/.env
+  #     # Here's where you will add some code to rollback on failure
+  #     - destroy-environment
 
 
     
@@ -267,12 +267,12 @@ workflows:
           requires: [test-frontend, test-backend, scan-frontend, scan-backend]
           filters:
             branches:
-              only: [release]
-      - configure-infrastructure:
-          requires: [deploy-infrastructure]
-          filters:
-            branches:
-              only: [release]
+              only: [master]
+      # - configure-infrastructure:
+      #     requires: [deploy-infrastructure]
+      #     filters:
+      #       branches:
+      #         only: [master]
       # - run-migrations:
       #     requires: [configure-infrastructure]
       # - deploy-frontend:
