@@ -10,9 +10,7 @@ Resources:
   WebsiteBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Sub "udapeople-${ID}"
-      PublicAccessBlockConfiguration:
-        BlockPublicAcls: false
+      BucketName: !Sub "udapeople-vulh20"
       AccessControl: PublicRead
       WebsiteConfiguration:
         IndexDocument: index.html
