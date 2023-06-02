@@ -44,6 +44,28 @@ commands:
               ]
             }
           event: fail
+  revert-migrations:
+    description: Revert the last migration if successfully run in the current workflow.
+    parameters:
+      # Add parameter here
+      workflow_id:
+        default: "${CIRCLE_WORKFLOW_ID:0:7}"
+        type: string
+    steps:
+      - run:
+          name: Revert migrations
+          # Add when this will run
+          when: on_fail
+          command: |
+            # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
+            SUCCESS=$(curl --insecure "https://kvdb.io/GXHhCwPTUc7qgk1vsXwYzV/migration_<< parameters.workflow_id >>")
+            if(( $SUCCESS==1 ));
+            then
+              cd ~/project/backend
+              npm install
+              npm run migrations:revert
+            fi
+
 
   destroy-environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
@@ -287,7 +309,7 @@ jobs:
             cat ~/project/backend/migrations_dump.txt
             then
               echo '========> Trigger send data to kvdb'
-              curl --insecure https://kvdb.io/DwkHzMekGfhsGkKSxCPacU/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
+              curl --insecure https://kvdb.io/GXHhCwPTUc7qgk1vsXwYzV/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
             fi
       # Here's where you will add some code to rollback on failure
       - destroy-environment:
