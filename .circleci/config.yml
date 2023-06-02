@@ -258,8 +258,17 @@ jobs:
       - checkout
       - attach_workspace:
           at: ~/
-      - install_node13
-      - install_awscli
+      - run:
+          name: Install nodejs 13
+          command: |
+            curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -
+            sudo apt-get install -y nodejs
+      - run:
+          name: Install awscli
+          command: |
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            unzip awscliv2.zip
+            sudo ./aws/install
 
       - run:
           name: Run migrations
