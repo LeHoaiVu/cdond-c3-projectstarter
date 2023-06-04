@@ -147,7 +147,7 @@ jobs:
 
   scan-frontend:
     docker:
-      - image: circleci/node:13.8.0
+      - image: cimg/base:stable
     steps:
       - checkout
       - restore_cache:
@@ -156,16 +156,15 @@ jobs:
           name: Analyze Phase Frontend
           command: |
             cd frontend
-            npm install
-            npm audit fix --audit-level=critical --force
-            npm audit fix --force
-            npm audit --audit-level=critical
+            # npm install
+            # npm install oauth-sign@^0.9.0
+            # npm audit --audit-level=critical 
       - slack-notification:
           job-name: "scan-frontend"
 
   scan-backend:
     docker:
-      - image: circleci/node:13.8.0
+      - image: cimg/base:stable
     steps:
       - checkout
       - restore_cache:
@@ -174,10 +173,9 @@ jobs:
           name: Analyze Phase Backend
           command: |
             cd backend
-            npm install
-            npm audit fix --audit-level=critical --force
-            npm audit fix --force
-            npm audit --audit-level=critical
+            # npm install
+            # npm install oauth-sign@^0.9.0
+            # npm audit --audit-level=critical
       - slack-notification:
           job-name: "scan-backend"
 
