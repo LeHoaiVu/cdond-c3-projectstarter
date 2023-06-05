@@ -1,0 +1,5 @@
+- [URL01]: https://github.com/LeHoaiVu/cdond-c3-projectstarter
+- [URL02]: http://udapeople-e4c9218.s3-website-us-east-1.amazonaws.com/#/employees
+- [URL03]: http://d1342kttgzc7nt.cloudfront.net/#/employees
+- [URL04]: http://54.243.8.202:3030/api/status
+- [URL05]: http://ec2-54-87-200-243.compute-1.amazonaws.com:9090/targets

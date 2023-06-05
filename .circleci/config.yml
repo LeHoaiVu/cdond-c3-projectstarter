@@ -435,14 +435,11 @@ jobs:
             if curl -s ${URL} | grep "Welcome"
             then
               echo SUCCESS_TEST_FRONTEND
-              exit 0
+              exit 1
             else
               echo FAIL_TEST_FRONTEND
               exit 1
             fi
-      - slack-notification:
-          job-name: "smoke-test-frontend"
-      # Here's where you will add some code to rollback on failure
       - destroy-environment:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
       - revert-migrations:
