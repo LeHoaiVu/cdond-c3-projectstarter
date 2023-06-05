@@ -435,7 +435,7 @@ jobs:
             if curl -s ${URL} | grep "Welcome"
             then
               echo SUCCESS_TEST_FRONTEND
-              exit 1
+              exit 0
             else
               echo FAIL_TEST_FRONTEND
               exit 1
